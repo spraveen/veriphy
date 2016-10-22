@@ -1,0 +1,7 @@
+leaf2 ansible_host=172.16.10.24
+
+[leaf]
+leaf2
+
+[datacenter:children]
+leaf

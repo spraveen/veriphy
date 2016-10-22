@@ -1,0 +1,27 @@
+---
+eoscli:
+  host: "{{ ansible_host }}"
+  username: "{{ eos_cli_user | default('admin') }}"
+  password: "{{ eos_cli_pass | default('admin') }}"
+  transport: cli
+  authorize: yes
+
+eoseapi:
+  host: "{{ ansible_host }}"
+  username: "{{ eos_eapi_user | default('ansible') }}"
+  password: "{{ eos_eapi_pass | default('force10') }}"
+  transport: eapi
+  use_ssl: no
+  authorize: yes
+
+junosnetconf:
+  host: "{{ ansible_ssh_host }}"
+  username: "{{ junos_cli_user | default('ansible') }}"
+  password: "{{ junos_cli_pass | default('Ansible') }}"
+  transport: netconf
+
+iosxrcli:
+  host: "{{ inventory_hostname }}"
+  username: "{{ iosxr_cli_user | default('root') }}"
+  password: "{{ iosxr_cli_pass | default('root') }}"
+  transport: cli

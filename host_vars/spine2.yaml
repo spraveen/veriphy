@@ -1,0 +1,3 @@
+---
+hostname: spine2
+ansible_nos: "junos"
