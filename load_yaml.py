@@ -31,29 +31,28 @@ def getFabricDictFromTopo(topoList):
    
     switchinfo = topoList['switchinfo'];
     linkinfo = topoList['linkinfo'];
-    for switchname, value in linkinfo.items():
-        fabric[switchname] = {};
 
-        switch_ports = value['ports']
-        switch_os = switchinfo[switchname]
+    for host1, host2 in linkinfo.items():
+        lHost = tuple ([s.lstrip() for s in host1.split(",")])
+        remHost = tuple ([s.lstrip() for s in host2.split(",")])
 
-        for portname, value in switch_ports.items():
-            localFullPortName = getFullPortName(switch_os, portname) 
-            rem_switch_os = switchinfo[value['host']]
-            fullport = getFullPortName(rem_switch_os, portname)
-            value['port'] = fullport
-            print "[%s - %s] ---> %s - %s " % (switchname, localFullPortName, value['host'], value['port'])
-            fabric[switchname][localFullPortName] = copy.deepcopy(value);
-            fabric[value['host']][value['port']] =  { "host" : switchname,
-                    "port" : localFullPortName}
+        switch_os = switchinfo[lHost[0]]
+        rem_switch_os = switchinfo[remHost[0]]
+
+        lFullPortName = getFullPortName(switch_os, lHost[1]) 
+        rFullPort = getFullPortName(rem_switch_os, remHost[1])
+
+        fabric[lHost[0]][lFullPortName] = { "host" : remHost[0],
+                    "port" : rFullPort}
+        fabric[remHost[0]][rFullPort] =  { "host" : lHost[0],
+                    "port" : lFullPortName}
 
     return fabric;
 
 if __name__ == "__main__":
-    #fabric = getFabricDictFromTopo(yamlLoad);
-    #yamlLoad = loadYamlTopoFile("topology.yaml");
     yamlLoad = loadYamlTopoFile("topo_link.yaml");
-    fabric = getFabricDictFromTupleTopo(yamlLoad);
-    print yamlLoad
-    #print fabric
+    fabric = getFabricDictFromTopo(yamlLoad);
+    for key, value in fabric.items():
+        print key
+        print value
 
