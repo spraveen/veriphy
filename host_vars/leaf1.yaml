@@ -1,0 +1,4 @@
+---
+hostname: leaf1
+ansible_nos: "eos"
+

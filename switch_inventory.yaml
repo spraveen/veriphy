@@ -1,0 +1,17 @@
+spine1 ansible_host=172.16.10.21
+spine2 ansible_host=172.16.10.22
+
+leaf1 ansible_host=172.16.10.21
+leaf2 ansible_host=172.16.10.21
+
+[spine]
+spine1
+spine2
+
+[leaf]
+leaf1
+leaf2
+
+[datacenter:children]
+spine
+leaf
