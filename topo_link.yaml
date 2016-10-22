@@ -1,0 +1,9 @@
+switchinfo:
+    switch1 : "eos"
+    switch2 : "eos"
+    switch3 : "eos"
+    switch4 : "eos"
+
+linkinfo:
+    - (switch1 , 1) : (switch2, 1)
+    - (switch1 , 2) : (switch2, 2)

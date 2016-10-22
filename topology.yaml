@@ -1,0 +1,13 @@
+switchinfo:
+    switch1 : "eos"
+    switch2 : "eos"
+    switch3 : "eos"
+    switch4 : "eos"
+
+linkinfo:
+    switch1 :
+        ports:
+            1 : { host : "switch3", port : 1}
+            2 : { host : "switch4", port : 1}
+            3 : { host : "switch2", port : 3}
+            
