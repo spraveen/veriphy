@@ -1,6 +1,8 @@
 import yaml
 import copy
 from collections import defaultdict
+import subprocess
+import re
 import json
 
 topo_dict = {}
@@ -8,7 +10,8 @@ topo_dict = {}
 
 OS_IFPREFIX = {
         "junos" : "em",
-        "eos"   : "Ethernet"
+        "eos"   : "Ethernet",
+        "os10"   : "ethernet1/1/"
         }
 
 def loadYamlTopoFile(filename):
@@ -102,13 +105,40 @@ def getFabricDictFromTopo(topoList):
 
     return fabric;
 
+def ansible_play():
+    proc = subprocess.Popen (["ansible-playbook", "-v", "facts.yaml", "-i", "switch_inventory.yaml"], stdout=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+    #f = open ("fullout2", 'w')
+    #f.write (stdout)
+    #f.close()
+    l = re.split (r'ok: \[[a-z]+[0-9]\] => ', stdout)
+    l[len(l)-1] = re.split ("\nPLAY", l[len(l)-1])[0]
+    #f = open ("out2", 'w')
+    #f.write ("start")
+    #f.close()
+    found = defaultdict(dict)
+    for s in l[1:]:
+        #f = open ("out2", 'a')
+        #f.write (s)
+        #f.close()
+        j = json.loads (s)
+       
+        src = j["ansible_facts"]["ansible_net_neighbors"] 
+        host = j["ansible_facts"]["ansible_net_hostname"]
+        for port,v in src.items():
+            if port in found[host]: 
+                found[host][port].update (v[0])  
+            else:
+                found[host][port] = v[0]  
+    return found
+     
+
 if __name__ == "__main__":
     yamlLoad = loadYamlTopoFile("topo_link.yaml");
     fabricInput = getFabricDictFromTopo(yamlLoad);
 
     yamlLoad = loadYamlTopoFile("topo_lldp.yaml");
-    fabricLldp = getFabricDictFromTopo(yamlLoad);
+    fabricLldp = ansible_play()
 
     finalState = checkFabricStatus(fabricInput, fabricLldp);
     print json.dumps(finalState);
-

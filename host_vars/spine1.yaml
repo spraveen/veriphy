@@ -1,4 +1,10 @@
 ---
 hostname: spine1
-ansible_nos: "junos"
+
+cli:
+  host: "{{ ansible_host }}"
+  username: "{{ dellos10_cli_user | default('admin') }}"
+  password: "{{ dellos10_cli_pass | default('admin') }}"
+  transport: cli
+  timeout: 300
 

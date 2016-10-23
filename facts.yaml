@@ -1,29 +1,13 @@
 ---
-# Playbook to collect Network Facts from multiple vendors.
+# tasks to collect all dell os interface facts
 - hosts: datacenter
   connection: local
   tasks:
-    - name: "Collect Facts from Arista EOS switches"
-      eos_facts:
-        provider: "{{ eoscli }}"
+    - name: "Collect Facts from Dell OS10 switches"
+      dellos10_facts:
+        provider: "{{ cli }}"
         gather_subset:
-          - all
-      when: ansible_nos == "eos"
-      register: result
+             - all
+      register: facts
 
 
-    - name: "Collect Facts from JunOS  switches"
-      junos_facts:
-        provider: "{{ junosnetconf }}"
-        gather_subset:
-          - all
-      when: ansible_nos == "junos"
-      register: result
-
-    - name: "Collect Facts from IOSXR switches"
-      junos_facts:
-        provider: "{{ iosxrcli }}"
-        gather_subset:
-           - all
-      when: ansible_nos == "iosxr"
-      register: result
