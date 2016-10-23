@@ -53,6 +53,7 @@ def checkFabricStatus(fabricInputFile, fabricCurrentState):
                 fabricInputFile[switch][port]['state'] = 'verified';
                 verifiedLinks[switch][port] = copy.deepcopy(lldp);
             else:
+                fabricInputFile[switch][port]['state'] = 'wrong';
                 wrongLinks[switch][port] = { 
                         'expectedHost' : inputFileRemHost['host'],
                         'expectedPort' : inputFileRemHost['port'],
@@ -108,19 +109,10 @@ def getFabricDictFromTopo(topoList):
 def ansible_play():
     proc = subprocess.Popen (["ansible-playbook", "-v", "facts.yaml", "-i", "switch_inventory.yaml"], stdout=subprocess.PIPE)
     stdout, stderr = proc.communicate()
-    #f = open ("fullout2", 'w')
-    #f.write (stdout)
-    #f.close()
     l = re.split (r'ok: \[[a-z]+[0-9]\] => ', stdout)
     l[len(l)-1] = re.split ("\nPLAY", l[len(l)-1])[0]
-    #f = open ("out2", 'w')
-    #f.write ("start")
-    #f.close()
     found = defaultdict(dict)
     for s in l[1:]:
-        #f = open ("out2", 'a')
-        #f.write (s)
-        #f.close()
         j = json.loads (s)
        
         src = j["ansible_facts"]["ansible_net_neighbors"] 
